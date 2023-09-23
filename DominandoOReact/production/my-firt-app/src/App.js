@@ -1,10 +1,10 @@
 import './App.css';
-import HelloWorld from './Hello';
+import Planets from './components/planets';
 
 function App() {
   return (
     <div>
-      <HelloWorld/>
+     <Planets/>
     </div>
   );
 }
