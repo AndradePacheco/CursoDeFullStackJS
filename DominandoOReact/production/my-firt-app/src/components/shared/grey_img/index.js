@@ -1,10 +1,9 @@
-import React, {Fragment} from 'react';
 import './style.css';
 
 const GreyImg = (props) => {
     return(
         <div>
-             <img className="greyImg" src={props.img_url}></img>
+             <img className={props.grey? "greyImg":"colorImg"} src={props.img_url} alt='planet'></img>
         </div>
     )
 }

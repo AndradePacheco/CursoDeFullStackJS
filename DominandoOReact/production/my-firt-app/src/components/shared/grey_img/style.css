@@ -1,4 +1,7 @@
 .greyImg{
-    width: 300px;
+    width: 200px;
     filter: 100%;
+}
+.colorImg{
+    width: 300px;
 }

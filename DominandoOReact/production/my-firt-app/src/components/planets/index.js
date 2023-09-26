@@ -1,27 +1,58 @@
-import React, {Fragment} from 'react';
+import React, {Fragment,useState,useEffect} from 'react';
 import Planet from './planet';
-const Planets = () => {
-    return(
-        <Fragment>
-            <h3>Planet list</h3>
-            <hr/>
-            <Planet name="Terra"
-                    description="A Terra é o terceiro planeta mais próximo do Sol, o mais denso e o quinto maior dos oito planetas do Sistema Solar. É também o maior dos quatro planetas telúricos."
-                    link="https://pt.wikipedia.org/wiki/Terra"
-                    img_url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/The_Blue_Marble_%28remastered%29.jpg/450px-The_Blue_Marble_%28remastered%29.jpg"
-                    />
-            <Planet name="Marte"
-                    description="Marte é o quarto planeta a partir do Sol, o segundo menor do Sistema Solar. Batizado em homenagem a divindade romana da guerra, muitas vezes é descrito como o Planeta Vermelho, porque o óxido de ferro predominante em sua superfície lhe dá uma aparência avermelhada."
-                    link="https://pt.wikipedia.org/wiki/Marte"
-                    img_url="https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/420px-OSIRIS_Mars_true_color.jpg"
-                    />
-            <Planet name="Saturno"
-                    description="Saturno é o sexto planeta a partir do Sol e o segundo maior do Sistema Solar atrás de Júpiter. Pertencente ao grupo dos gigantes gasosos, possui cerca de 95 massas terrestres e orbita a uma distância média de 9,5 unidades astronômicas."
-                    link="https://pt.wikipedia.org/wiki/Saturno_(planeta)"
-                    img_url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/450px-Saturn_during_Equinox.jpg"
-                    />
-        </Fragment>
-    )
+import Form from './form';
+
+async function getPlanets(){
+    let response = await fetch("http://localhost:3000/api/planets.json");
+    let data = await response.json();
+
+    return data;
 }
+
+const Planets = () => {
+
+    const [planets,setPlanets] = useState([]);
+    useEffect(() => {
+    getPlanets().then(data => {
+        setPlanets(data["planets"])
+    })
+    },[])
+
+    const addPlanet = (planet) => {
+        setPlanets([...planets, planet]);
+    }
+
+    const removeLastPlanet = () => {
+        let new_planet = [...planets];
+        new_planet.pop();
+        setPlanets(new_planet)
+    }
+
+    const duplicateLastPlanet = () => {
+        let new_planet = planets[planets.length - 1];
+        setPlanets([...planets, new_planet])
+    }
+
+    return(
+    <Fragment>
+        <h3>Planet list</h3>
+        <hr/>
+        <Form addPlanet = {addPlanet}/>
+        <hr/>
+        <button onClick={removeLastPlanet}>Remover último Planeta</button>
+        <button onClick={duplicateLastPlanet}>Duplicar último Planeta</button>
+        <hr/>
+        {
+            planets.map((planet,index) => 
+            <Planet name={planet.name}
+                link={planet.link}
+                description={planet.description}
+                img_url={planet.img_url}
+                id = {planet.id}
+                key={index}
+                />)
+        }
+    </Fragment>
+)}
 
 export default Planets;
