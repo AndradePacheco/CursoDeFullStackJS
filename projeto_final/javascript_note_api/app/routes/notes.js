@@ -15,6 +15,23 @@ router.post('/', WithAuth, async (req, res) => {
     }
 })
 
+router.get('/search', WithAuth, async (req, res) => {
+    let {q} = req.query;
+    try {
+        let notes = await Note
+            .find({author: req.user._id})
+            .find({$text: {$search: q}});
+            //.find({"$or":[ 
+            //  {title: {$regex: q}},
+            //  {body: {$regex: q}},
+            //]});
+         
+        res.json(notes);
+    } catch (error) {
+        
+    }
+})
+
 router.get('/:id', WithAuth, async (req, res) => {
     try {
         const {id} = req.params;
@@ -60,7 +77,7 @@ router.delete('/:id', WithAuth, async (req, res) => {
     try {
         let note = await Note.findById(id);
         if(isOwner(req.user, note)){
-            await note.delete();
+            await note.deleteOne();
             res.json({message: "Success!"});
         } else res.status(403).json({error: 'Error: Permission denied!'});
     } catch (error) {
